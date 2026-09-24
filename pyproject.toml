@@ -1,0 +1,23 @@
+[project]
+name = "enterprise-document-assistant"
+version = "0.1.0"
+description = "Ask Questions about enterprise Documents and get Grounded answers with Citations."
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.115",
+  "uvicorn>=0.32",
+  "python-multipart>=0.0.12",
+  "langchain-text-splitters>=0.3",
+  "langchain-openai>=0.3",
+  "langchain-pinecone>=0.2",
+  "pypdf>=5",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "mypy>=1.13", "fpdf2>=2.8"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
