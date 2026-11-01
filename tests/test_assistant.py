@@ -227,3 +227,142 @@ def test_both_pinecone_settings_use_pinecone_adapter():
 def test_one_pinecone_setting_stays_on_memory():
     assistant = build_assistant({"PINECONE_API_KEY": "pc-key"})
     assert isinstance(assistant.store, InMemoryVectorStore)
+
+
+def test_home_page_offers_upload_and_ask():
+    from fastapi.testclient import TestClient
+
+    from document_assistant.api import create_app
+
+    client = TestClient(create_app(assistant_with(MapEmbedder({}), RecordingAnswerer())))
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert "Enterprise Document Assistant" in response.text
+    assert 'id="upload"' in response.text
+    assert 'id="ask"' in response.text
+
+
+def test_documents_lists_what_was_added():
+    assistant = assistant_with(MapEmbedder({}), RecordingAnswerer())
+    assistant.add_document("handbook.md", b"Employees receive 15 vacation days per year.")
+    assistant.add_document("empty.txt", b"   ")
+
+    listed = assistant.documents()
+
+    assert [(item.name, item.passages, item.pages) for item in listed] == [("handbook.md", 1, None)]
+
+
+def test_adding_a_document_again_replaces_its_passages():
+    embedder = MapEmbedder({}, default=[1.0, 0.0])
+    assistant = assistant_with(embedder, RecordingAnswerer("ok"))
+    assistant.add_document("handbook.md", b"Employees receive 10 vacation days per year.")
+    assistant.add_document("handbook.md", b"Employees receive 15 vacation days per year.")
+
+    result = assistant.ask("How many vacation days?")
+
+    assert [citation.excerpt for citation in result.citations] == [
+        "Employees receive 15 vacation days per year."
+    ]
+    assert len(assistant.documents()) == 1
+
+
+def test_removed_document_no_longer_answers():
+    embedder = MapEmbedder({}, default=[1.0, 0.0])
+    assistant = assistant_with(embedder, RecordingAnswerer())
+    assistant.add_document("handbook.md", b"Employees receive 15 vacation days per year.")
+
+    assert assistant.remove_document("handbook.md") is True
+    assert assistant.remove_document("handbook.md") is False
+    result = assistant.ask("How many vacation days?")
+
+    assert result.answer == REFUSAL
+    assert assistant.documents() == ()
+
+
+def test_citation_carries_relevance_score():
+    embedder = MapEmbedder({}, default=[1.0, 0.0])
+    assistant = assistant_with(embedder, RecordingAnswerer())
+    assistant.add_document("handbook.md", b"Employees receive 15 vacation days per year.")
+
+    result = assistant.ask("How many vacation days?")
+
+    assert result.citations[0].score == 1.0
+
+
+def test_non_utf8_text_document_is_added():
+    embedder = MapEmbedder({}, default=[1.0, 0.0])
+    assistant = assistant_with(embedder, RecordingAnswerer())
+
+    added = assistant.add_document("cafe.txt", "Café opens at 8am.".encode("cp1252"))
+    result = assistant.ask("When does the cafe open?")
+
+    assert added == 1
+    assert result.citations[0].excerpt == "Café opens at 8am."
+
+
+def test_damaged_pdf_is_rejected():
+    assistant = assistant_with(MapEmbedder({}), RecordingAnswerer())
+    try:
+        assistant.add_document("broken.pdf", b"not really a pdf")
+    except ValueError as error:
+        assert "pdf" in str(error).lower()
+    else:
+        raise AssertionError("expected rejection")
+
+
+def test_local_embedder_matches_the_sample_question_and_refuses_unrelated_ones():
+    from document_assistant.embedders import HashEmbedder
+
+    assistant = assistant_with(HashEmbedder(), PassageAnswerer())
+    assistant.add_document(
+        "vacation-policy.md",
+        b"# Leave policy\n\nEmployees receive 15 vacation days per year.\nThe office closes at 6pm.",
+    )
+
+    found = assistant.ask("How many vacation days do employees receive?")
+    unrelated = assistant.ask("What is the firewall rule for the VPN?")
+
+    assert found.citations[0].document == "vacation-policy.md"
+    assert "15 vacation days" in found.answer
+    assert unrelated.answer == REFUSAL
+
+
+def test_model_prompt_numbers_the_passages_for_citation():
+    chat = ScriptedChat()
+    passages = (
+        Passage(document="handbook.md", page=None, chunk_index=0, text="First fact."),
+        Passage(document="leave.pdf", page=3, chunk_index=4, text="Second fact."),
+    )
+
+    OpenAIAnswerer(chat).answer("Which facts?", passages)
+
+    user = chat.messages[-1]["content"]
+    assert "[1] (handbook.md)\nFirst fact." in user
+    assert "[2] (leave.pdf, page 3)\nSecond fact." in user
+
+
+def test_http_lists_removes_and_reports_mode():
+    from fastapi.testclient import TestClient
+
+    from document_assistant.api import create_app
+
+    embedder = MapEmbedder({}, default=[1.0, 0.0])
+    client = TestClient(create_app(assistant_with(embedder, PassageAnswerer())))
+
+    added = client.post("/documents", files={"file": ("handbook.md", b"Employees receive 15 vacation days.")})
+    again = client.post("/documents", files={"file": ("handbook.md", b"Employees receive 15 vacation days.")})
+    listed = client.get("/documents").json()
+    asked = client.post("/questions", json={"question": "vacation?"}).json()
+    removed = client.delete("/documents/handbook.md")
+    missing = client.delete("/documents/handbook.md")
+    health = client.get("/health").json()
+
+    assert added.json() == {"document": "handbook.md", "passages": 1, "replaced": False}
+    assert again.json()["replaced"] is True
+    assert listed == [{"document": "handbook.md", "passages": 1, "pages": None}]
+    assert asked["citations"][0]["score"] == 1.0
+    assert removed.status_code == 200
+    assert missing.status_code == 404
+    assert health == {"status": "ok", "store": "memory", "answerer": "passage"}
+    assert client.get("/documents").json() == []

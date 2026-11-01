@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Enterprise Document Assistant</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --paper: #f4f0e8;
+      --card: #fffdf9;
+      --sunk: #f9f6f0;
+      --ink: #1c1915;
+      --muted: #6b6359;
+      --faint: #9a9186;
+      --line: #e3dbcd;
+      --accent: #8c3a2f;
+      --accent-soft: #f6ebe7;
+      --accent-ink: #fff;
+      --ok: #2f6b45;
+      --ok-soft: #e6f1e9;
+      --warn-soft: #fbf3df;
+      --warn: #8a6410;
+      --mark: #f7dc8f;
+      --shadow: 0 1px 2px rgba(40, 30, 20, .05), 0 6px 24px rgba(40, 30, 20, .06);
+      --serif: "Iowan Old Style", Palatino, Georgia, serif;
+      --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      --mono: ui-monospace, "SF Mono", Menlo, monospace;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --paper: #17140f;
+        --card: #211d17;
+        --sunk: #1b1813;
+        --ink: #efe8dc;
+        --muted: #b1a796;
+        --faint: #7d7465;
+        --line: #352f26;
+        --accent: #e08c78;
+        --accent-soft: #3a241e;
+        --accent-ink: #1c1210;
+        --ok: #8fcfa5;
+        --ok-soft: #1d2e22;
+        --warn-soft: #33290f;
+        --warn: #e6c26a;
+        --mark: #6b5414;
+        --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 24px rgba(0,0,0,.25);
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 16px/1.55 var(--serif);
+      -webkit-font-smoothing: antialiased;
+    }
+    button, textarea, input { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+    .app {
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr);
+      grid-template-rows: auto 1fr;
+      height: 100vh;
+      max-width: 1240px;
+      margin: 0 auto;
+      gap: 0 24px;
+      padding: 0 24px;
+    }
+    header {
+      grid-column: 1 / -1;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 20px 0 16px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 20px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .logo {
+      width: 36px; height: 36px; flex: none; border-radius: 10px;
+      background: var(--accent); color: var(--accent-ink);
+      display: grid; place-items: center;
+    }
+    h1 { margin: 0; font-size: 1.35rem; font-weight: 600; letter-spacing: -0.015em; }
+    .tagline { margin: 0; color: var(--muted); font: 13px/1.3 var(--sans); }
+    .badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+    .badge {
+      font: 500 12px/1 var(--sans); padding: 6px 10px; border-radius: 999px;
+      border: 1px solid var(--line); background: var(--card); color: var(--muted);
+      display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+    }
+    .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--faint); }
+    .badge.live::before { background: var(--ok); }
+    .badge.local::before { background: var(--warn); }
+    .badge.down::before { background: var(--accent); }
+
+    /* Sidebar */
+    aside { display: flex; flex-direction: column; gap: 14px; min-height: 0; padding-bottom: 24px; }
+    .panel {
+      background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+    .panel-head {
+      display: flex; align-items: baseline; justify-content: space-between;
+      padding: 16px 18px 10px;
+    }
+    h2 { margin: 0; font-size: 1rem; font-weight: 600; }
+    .count { font: 12px/1 var(--sans); color: var(--faint); }
+    .dropzone {
+      margin: 0 14px 14px; padding: 20px 14px; text-align: center;
+      border: 1.5px dashed var(--line); border-radius: 12px; background: var(--sunk);
+      font: 14px/1.4 var(--sans); color: var(--muted);
+      transition: border-color .15s, background .15s;
+      display: block; width: calc(100% - 28px);
+    }
+    .dropzone:hover, .dropzone.over { border-color: var(--accent); background: var(--accent-soft); }
+    .dropzone strong { color: var(--ink); font-weight: 600; }
+    .dropzone svg { display: block; margin: 0 auto 8px; color: var(--accent); }
+    .dropzone small { display: block; margin-top: 4px; color: var(--faint); font-size: 12px; }
+    .doc-list { list-style: none; margin: 0; padding: 0 6px 8px; overflow-y: auto; max-height: calc(100vh - 360px); }
+    .doc {
+      display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: center; gap: 10px;
+      padding: 8px 10px; border-radius: 10px; font: 14px/1.3 var(--sans);
+    }
+    .doc:hover { background: var(--sunk); }
+    .doc-icon {
+      width: 28px; height: 32px; border-radius: 5px; background: var(--accent-soft); color: var(--accent);
+      font: 700 9px/32px var(--sans); text-align: center; letter-spacing: .03em; text-transform: uppercase;
+    }
+    .doc-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+    .doc-meta { color: var(--faint); font-size: 12px; margin-top: 2px; }
+    .doc-meta.err { color: var(--accent); white-space: normal; }
+    .doc-remove {
+      border: 0; background: transparent; color: var(--faint); width: 28px; height: 28px; border-radius: 8px;
+      display: grid; place-items: center; opacity: 0; transition: opacity .15s;
+    }
+    .doc:hover .doc-remove, .doc-remove:focus-visible { opacity: 1; }
+    .doc-remove:hover { background: var(--accent-soft); color: var(--accent); }
+    .spinner {
+      width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--line); border-top-color: var(--accent);
+      animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .empty-docs { padding: 4px 18px 16px; color: var(--faint); font: 13px/1.4 var(--sans); margin: 0; }
+    .note {
+      font: 13px/1.45 var(--sans); color: var(--warn); background: var(--warn-soft);
+      border-radius: 12px; padding: 12px 14px; margin: 0;
+    }
+    .note code { font: 12px var(--mono); }
+
+    /* Conversation */
+    main { display: flex; flex-direction: column; min-height: 0; min-width: 0; }
+    .thread { flex: 1; overflow-y: auto; padding: 4px 4px 24px; scroll-behavior: smooth; }
+    .welcome { max-width: 560px; margin: 8vh auto 0; text-align: center; color: var(--muted); }
+    .welcome h2 { font-size: 1.6rem; font-weight: 600; color: var(--ink); margin-bottom: 8px; letter-spacing: -0.015em; }
+    .welcome p { margin: 0 0 20px; }
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: left; font: 13px/1.4 var(--sans); }
+    .step { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+    .step b { display: block; color: var(--accent); font-size: 12px; margin-bottom: 4px; }
+    .suggestions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 18px; }
+    .chip {
+      border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 7px 12px;
+      font: 13px/1.2 var(--sans); color: var(--ink);
+    }
+    .chip:hover { border-color: var(--accent); color: var(--accent); }
+
+    .turn { margin: 0 0 22px; animation: rise .2s ease-out; }
+    @keyframes rise { from { opacity: 0; transform: translateY(4px); } }
+    .q {
+      margin-left: auto; max-width: 80%; width: fit-content;
+      background: var(--ink); color: var(--paper); padding: 10px 16px;
+      border-radius: 18px 18px 4px 18px; font: 15px/1.45 var(--sans); white-space: pre-wrap;
+    }
+    .a {
+      margin-top: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 4px 18px 18px 18px;
+      padding: 18px 20px; box-shadow: var(--shadow);
+    }
+    .a.refusal { background: var(--sunk); box-shadow: none; }
+    .a.refusal .answer-text { color: var(--muted); font-style: italic; }
+    .a.error { border-color: var(--accent); }
+    .a.error .answer-text { color: var(--accent); font: 14px/1.45 var(--sans); }
+    .answer-text { margin: 0; white-space: pre-wrap; font-size: 16.5px; }
+    .ref {
+      display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 5px; margin: 0 1px;
+      border: 0; border-radius: 6px; background: var(--accent-soft); color: var(--accent);
+      font: 600 11px/1 var(--sans); vertical-align: 2px;
+    }
+    .ref:hover { background: var(--accent); color: var(--accent-ink); }
+    .a-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 14px; }
+    .a-label { font: 600 11px/1 var(--sans); letter-spacing: .06em; text-transform: uppercase; color: var(--faint); }
+    .tool {
+      border: 1px solid var(--line); background: transparent; border-radius: 8px; padding: 5px 9px;
+      font: 12px/1 var(--sans); color: var(--muted); display: inline-flex; gap: 6px; align-items: center;
+    }
+    .tool:hover { color: var(--ink); border-color: var(--faint); }
+    .citations { margin-top: 10px; display: grid; gap: 8px; }
+    .citation { border: 1px solid var(--line); border-radius: 12px; background: var(--sunk); transition: box-shadow .2s, border-color .2s; }
+    .citation.flash { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .citation summary {
+      list-style: none; cursor: pointer; padding: 10px 12px;
+      display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center;
+      font: 13px/1.3 var(--sans);
+    }
+    .citation summary::-webkit-details-marker { display: none; }
+    .citation .num { min-width: 22px; height: 22px; border-radius: 6px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font: 600 11px/1 var(--sans); }
+    .citation .src { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .citation .src b { font-weight: 600; }
+    .citation .src span { color: var(--faint); }
+    .relevance { display: flex; align-items: center; gap: 6px; color: var(--faint); font-size: 11px; }
+    .bar { width: 44px; height: 4px; border-radius: 4px; background: var(--line); overflow: hidden; }
+    .bar i { display: block; height: 100%; background: var(--ok); }
+    .excerpt {
+      margin: 0; padding: 0 14px 14px 44px; font-size: 14.5px; line-height: 1.6; color: var(--muted);
+      white-space: pre-wrap; max-height: 320px; overflow-y: auto;
+    }
+    mark { background: var(--mark); color: inherit; border-radius: 2px; padding: 0 1px; }
+    .thinking { display: flex; gap: 5px; padding: 6px 2px; }
+    .thinking i { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); animation: pulse 1s infinite ease-in-out; }
+    .thinking i:nth-child(2) { animation-delay: .15s; }
+    .thinking i:nth-child(3) { animation-delay: .3s; }
+    @keyframes pulse { 0%, 100% { opacity: .25; transform: scale(.85); } 50% { opacity: 1; transform: scale(1); } }
+
+    .composer-wrap { padding: 0 0 20px; }
+    .composer {
+      display: flex; align-items: flex-end; gap: 10px;
+      background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 10px 10px 10px 16px;
+      box-shadow: var(--shadow);
+    }
+    .composer:focus-within { border-color: var(--faint); }
+    .composer textarea {
+      flex: 1; border: 0; outline: 0; resize: none; background: transparent;
+      font: 15.5px/1.45 var(--sans); max-height: 180px; min-height: 24px; padding: 6px 0;
+    }
+    .composer textarea::placeholder { color: var(--faint); }
+    .send {
+      flex: none; width: 38px; height: 38px; border-radius: 11px; border: 0;
+      background: var(--accent); color: var(--accent-ink); display: grid; place-items: center;
+    }
+    .send:disabled { opacity: .35; cursor: not-allowed; }
+    .composer-hint { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; font: 12px/1.3 var(--sans); color: var(--faint); padding: 0 4px; }
+    .composer-hint button { border: 0; background: none; color: var(--faint); padding: 0; font-size: 12px; }
+    .composer-hint button:hover { color: var(--accent); }
+    kbd { font: 11px var(--mono); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; }
+
+    .toast {
+      position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px);
+      background: var(--ink); color: var(--paper); padding: 10px 16px; border-radius: 10px;
+      font: 13px/1.3 var(--sans); opacity: 0; pointer-events: none; transition: .2s; z-index: 10;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%); }
+    .page-drop {
+      position: fixed; inset: 0; background: color-mix(in srgb, var(--accent) 12%, transparent);
+      border: 3px dashed var(--accent); display: none; place-items: center; z-index: 20;
+      font: 600 18px var(--sans); color: var(--accent); pointer-events: none;
+    }
+    .page-drop.show { display: grid; }
+
+    @media (max-width: 860px) {
+      .app { display: block; height: auto; padding: 0 16px; }
+      header { flex-wrap: wrap; }
+      aside { padding-bottom: 16px; }
+      .doc-list { max-height: 220px; }
+      .doc-remove { opacity: 1; }
+      .thread { overflow: visible; min-height: 40vh; }
+      .composer-wrap { position: sticky; bottom: 0; background: var(--paper); padding-top: 8px; }
+      .steps { grid-template-columns: 1fr; }
+      .q { max-width: 92%; }
+      .composer-hint span { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>
+        </div>
+        <div>
+          <h1>Enterprise Document Assistant</h1>
+          <p class="tagline">Grounded answers from your manuals, with citations.</p>
+        </div>
+      </div>
+      <div class="badges" id="badges" aria-live="polite">
+        <span class="badge">Connecting…</span>
+      </div>
+    </header>
+
+    <aside>
+      <section class="panel" aria-labelledby="docs-title">
+        <div class="panel-head">
+          <h2 id="docs-title">Documents</h2>
+          <span class="count" id="doc-count"></span>
+        </div>
+        <input id="file" class="sr-only" type="file" multiple
+               accept=".pdf,.md,.markdown,.txt,application/pdf,text/plain,text/markdown" />
+        <button id="upload" class="dropzone" type="button">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+          <strong>Add documents</strong> or drop files here
+          <small>PDF, Markdown, or plain text · up to 25 MB</small>
+        </button>
+        <ul class="doc-list" id="documents" aria-label="Documents in the corpus"></ul>
+        <p class="empty-docs" id="empty-docs">No documents yet. Add one to start asking questions.</p>
+      </section>
+      <p class="note" id="mode-note" hidden></p>
+    </aside>
+
+    <main>
+      <div class="thread" id="thread" aria-live="polite">
+        <div class="welcome" id="welcome">
+          <h2>Ask your documents</h2>
+          <p>Every answer is drawn only from the passages it cites. If nothing relevant is found, you'll be told so.</p>
+          <div class="steps">
+            <div class="step"><b>1 · Add</b>Upload PDFs, Markdown, or text manuals.</div>
+            <div class="step"><b>2 · Ask</b>Write a question in plain language.</div>
+            <div class="step"><b>3 · Check</b>Open the citations to verify each claim.</div>
+          </div>
+          <div class="suggestions" id="suggestions"></div>
+        </div>
+      </div>
+      <div class="composer-wrap">
+        <form class="composer" id="ask-form">
+          <label for="question" class="sr-only">Question</label>
+          <textarea id="question" rows="1" placeholder="Ask about your documents…"></textarea>
+          <button id="ask" class="send" type="submit" aria-label="Ask">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </form>
+        <div class="composer-hint">
+          <span><kbd>Enter</kbd> to ask · <kbd>Shift</kbd>+<kbd>Enter</kbd> for a new line</span>
+          <button type="button" id="clear" hidden>Clear conversation</button>
+        </div>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <div class="page-drop" id="page-drop">Drop to add to the corpus</div>
+
+  <script>
+    const $ = (s) => document.querySelector(s);
+    const els = {
+      file: $("#file"), upload: $("#upload"), docs: $("#documents"), emptyDocs: $("#empty-docs"),
+      count: $("#doc-count"), badges: $("#badges"), note: $("#mode-note"), thread: $("#thread"),
+      welcome: $("#welcome"), suggestions: $("#suggestions"), form: $("#ask-form"),
+      question: $("#question"), ask: $("#ask"), clear: $("#clear"), toast: $("#toast"), pageDrop: $("#page-drop"),
+    };
+    const SUPPORTED = /\.(pdf|md|markdown|txt)$/i;
+    const STOP = new Set("a an and are as at be but by can could did do does for from had has have how i if in into is it its may me my of on or our should so than that the their them then there these they this to was we were what when where which who why will with would you your about any all also many much must".split(" "));
+    const state = { docs: new Map(), pending: false, mode: null };
+
+    function el(tag, props = {}, ...children) {
+      const node = document.createElement(tag);
+      for (const [key, value] of Object.entries(props)) {
+        if (key === "class") node.className = value;
+        else if (key === "text") node.textContent = value;
+        else if (key.startsWith("on")) node.addEventListener(key.slice(2), value);
+        else node.setAttribute(key, value);
+      }
+      for (const child of children) if (child != null) node.append(child);
+      return node;
+    }
+    const svg = (path) => {
+      const s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      s.setAttribute("width", "14"); s.setAttribute("height", "14"); s.setAttribute("viewBox", "0 0 24 24");
+      s.setAttribute("fill", "none"); s.setAttribute("stroke", "currentColor"); s.setAttribute("stroke-width", "2");
+      s.setAttribute("stroke-linecap", "round"); s.setAttribute("stroke-linejoin", "round"); s.setAttribute("aria-hidden", "true");
+      s.innerHTML = path; return s;
+    };
+    const ICON_X = '<path d="M6 6l12 12M18 6L6 18"/>';
+    const ICON_COPY = '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/>';
+
+    let toastTimer;
+    function toast(message) {
+      els.toast.textContent = message;
+      els.toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => els.toast.classList.remove("show"), 2600);
+    }
+
+    async function api(path, options) {
+      const response = await fetch(path, options);
+      let payload = null;
+      try { payload = await response.json(); } catch { /* empty body */ }
+      if (!response.ok) {
+        const detail = payload && payload.detail;
+        throw new Error(typeof detail === "string" ? detail : `Request failed (${response.status})`);
+      }
+      return payload;
+    }
+
+    /* ---------- Status ---------- */
+    async function loadStatus() {
+      try {
+        state.mode = await api("/health");
+        const { store, answerer } = state.mode;
+        els.badges.replaceChildren(
+          el("span", { class: `badge ${answerer === "openai" ? "live" : "local"}`, text: answerer === "openai" ? "OpenAI answers" : "Local answers" }),
+          el("span", { class: `badge ${store === "pinecone" ? "live" : "local"}`, text: store === "pinecone" ? "Pinecone corpus" : "In-memory corpus" }),
+        );
+        const notes = [];
+        if (answerer !== "openai") notes.push("Answers show the most relevant passage verbatim. Set <code>OPENAI_API_KEY</code> in <code>.env</code> for written answers.");
+        if (store !== "pinecone") notes.push("The corpus lives in memory and is cleared when the server restarts.");
+        els.note.innerHTML = notes.join(" ");
+        els.note.hidden = notes.length === 0;
+      } catch {
+        els.badges.replaceChildren(el("span", { class: "badge down", text: "Server unreachable" }));
+      }
+    }
+
+    /* ---------- Documents ---------- */
+    function docRow(name, meta, { busy = false, error = false } = {}) {
+      const ext = (name.match(/\.([a-z]+)$/i) || [, "doc"])[1].slice(0, 4);
+      const remove = el("button", { class: "doc-remove", type: "button", "aria-label": `Remove ${name}`, title: "Remove from corpus" }, svg(ICON_X));
+      remove.addEventListener("click", () => (error ? row.remove() : removeDoc(name)));
+      const row = el("li", { class: "doc", "data-name": name },
+        el("div", { class: "doc-icon", text: ext }),
+        el("div", {}, el("div", { class: "doc-name", text: name, title: name }), el("div", { class: `doc-meta${error ? " err" : ""}`, text: meta })),
+        busy ? el("div", { class: "spinner", "aria-label": "Adding" }) : remove,
+      );
+      return row;
+    }
+    function describeDoc(doc) {
+      const parts = [`${doc.passages} passage${doc.passages === 1 ? "" : "s"}`];
+      if (doc.pages) parts.push(`${doc.pages} page${doc.pages === 1 ? "" : "s"}`);
+      return parts.join(" · ");
+    }
+    function renderDocs() {
+      const rows = [...state.docs.values()].map((doc) => docRow(doc.document, describeDoc(doc)));
+      const transient = [...els.docs.querySelectorAll("li[data-transient]")];
+      els.docs.replaceChildren(...rows, ...transient);
+      const n = state.docs.size;
+      els.count.textContent = n ? `${n} in corpus` : "";
+      els.emptyDocs.hidden = n > 0 || transient.length > 0;
+      renderSuggestions();
+    }
+    async function loadDocs() {
+      try {
+        const docs = await api("/documents");
+        state.docs = new Map(docs.map((d) => [d.document, d]));
+        renderDocs();
+      } catch { /* status badge reports outages */ }
+    }
+
+    async function uploadFiles(files) {
+      for (const file of files) {
+        const name = file.name;
+        const temp = docRow(name, "Adding…", { busy: true });
+        temp.dataset.transient = "1";
+        els.docs.querySelector(`li[data-name="${CSS.escape(name)}"]:not([data-transient])`)?.remove();
+        els.docs.append(temp);
+        els.emptyDocs.hidden = true;
+        const fail = (message) => {
+          const bad = docRow(name, message, { error: true });
+          bad.dataset.transient = "1";
+          temp.replaceWith(bad);
+        };
+        if (!SUPPORTED.test(name)) { fail("Unsupported type. Use PDF, Markdown, or text."); continue; }
+        if (file.size > 25 * 1024 * 1024) { fail("Larger than 25 MB."); continue; }
+        const body = new FormData();
+        body.append("file", file);
+        try {
+          const result = await api("/documents", { method: "POST", body });
+          temp.remove();
+          if (result.passages === 0) { fail("No readable text found. Scanned PDFs need OCR first."); continue; }
+          state.docs.delete(result.document);
+          state.docs.set(result.document, { document: result.document, passages: result.passages, pages: null });
+          renderDocs();
+          toast(result.replaced ? `Replaced ${result.document}` : `Added ${result.document}`);
+        } catch (error) {
+          fail(error.message || "The document could not be added.");
+        }
+      }
+      loadDocs(); // pick up page counts
+    }
+
+    async function removeDoc(name) {
+      try {
+        await api(`/documents/${encodeURIComponent(name)}`, { method: "DELETE" });
+        state.docs.delete(name);
+        renderDocs();
+        toast(`Removed ${name}`);
+      } catch (error) {
+        toast(error.message);
+      }
+    }
+
+    els.upload.addEventListener("click", () => els.file.click());
+    els.file.addEventListener("change", () => { uploadFiles([...els.file.files]); els.file.value = ""; });
+
+    let dragDepth = 0;
+    const hasFiles = (e) => [...(e.dataTransfer?.types || [])].includes("Files");
+    window.addEventListener("dragenter", (e) => { if (!hasFiles(e)) return; dragDepth++; els.pageDrop.classList.add("show"); els.upload.classList.add("over"); });
+    window.addEventListener("dragleave", () => { dragDepth = Math.max(0, dragDepth - 1); if (!dragDepth) { els.pageDrop.classList.remove("show"); els.upload.classList.remove("over"); } });
+    window.addEventListener("dragover", (e) => { if (hasFiles(e)) e.preventDefault(); });
+    window.addEventListener("drop", (e) => {
+      if (!hasFiles(e)) return;
+      e.preventDefault(); dragDepth = 0;
+      els.pageDrop.classList.remove("show"); els.upload.classList.remove("over");
+      uploadFiles([...e.dataTransfer.files]);
+    });
+
+    /* ---------- Suggestions ---------- */
+    function renderSuggestions() {
+      const ideas = state.docs.size
+        ? ["Summarize the key policies", "What are the deadlines mentioned?", "Who should I contact for approvals?"]
+        : [];
+      els.suggestions.replaceChildren(...ideas.map((text) =>
+        el("button", { class: "chip", type: "button", text, onclick: () => { els.question.value = text; autosize(); els.question.focus(); } })));
+    }
+
+    /* ---------- Asking ---------- */
+    function terms(question) {
+      return [...new Set(question.toLowerCase().match(/[a-z0-9]+/g) || [])]
+        .filter((t) => t.length > 2 && !STOP.has(t))
+        .map((t) => t.replace(/(ies|s)$/, ""))
+        .filter((t) => t.length > 2);
+    }
+    function highlight(text, words) {
+      const frag = document.createDocumentFragment();
+      if (!words.length) { frag.append(text); return frag; }
+      const escaped = words.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+      const re = new RegExp(`\\b(${escaped.join("|")})[a-z]*`, "gi");
+      let last = 0;
+      for (const m of text.matchAll(re)) {
+        frag.append(text.slice(last, m.index), el("mark", { text: m[0] }));
+        last = m.index + m[0].length;
+      }
+      frag.append(text.slice(last));
+      return frag;
+    }
+    function answerWithRefs(text, citations, onRef) {
+      const frag = document.createDocumentFragment();
+      let last = 0;
+      for (const m of text.matchAll(/\[(\d+(?:\s*,\s*\d+)*)\]/g)) {
+        const nums = m[1].split(",").map((n) => parseInt(n, 10));
+        if (!nums.every((n) => n >= 1 && n <= citations.length)) continue;
+        frag.append(text.slice(last, m.index));
+        for (const n of nums) frag.append(el("button", { class: "ref", type: "button", text: String(n), title: citations[n - 1].document, onclick: () => onRef(n) }));
+        last = m.index + m[0].length;
+      }
+      frag.append(text.slice(last));
+      return frag;
+    }
+
+    function renderAnswer(card, question, payload) {
+      const { answer, citations } = payload;
+      card.classList.toggle("refusal", citations.length === 0);
+      const words = terms(question);
+      const blocks = citations.map((c, i) => {
+        const where = c.page == null ? "" : ` · page ${c.page}`;
+        const pct = c.score == null ? null : Math.max(0, Math.min(100, Math.round(c.score * 100)));
+        const details = el("details", { class: "citation" },
+          el("summary", {},
+            el("span", { class: "num", text: String(i + 1) }),
+            el("span", { class: "src" }, el("b", { text: c.document }), el("span", { text: where })),
+            pct == null ? null : el("span", { class: "relevance", title: "Similarity to the question" },
+              el("span", { class: "bar" }, Object.assign(document.createElement("i"), { style: `width:${pct}%` })), `${pct}%`)),
+          el("p", { class: "excerpt" }, highlight(c.excerpt, words)));
+        return details;
+      });
+      const openRef = (n) => {
+        const target = blocks[n - 1];
+        target.open = true;
+        target.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        target.classList.add("flash");
+        setTimeout(() => target.classList.remove("flash"), 1200);
+      };
+      const copy = el("button", { class: "tool", type: "button", title: "Copy answer" }, svg(ICON_COPY), "Copy");
+      copy.addEventListener("click", async () => {
+        const sources = citations.map((c, i) => `[${i + 1}] ${c.document}${c.page == null ? "" : `, page ${c.page}`}`).join("\n");
+        try { await navigator.clipboard.writeText(sources ? `${answer}\n\nSources:\n${sources}` : answer); toast("Answer copied"); }
+        catch { toast("Copy is not available in this browser"); }
+      });
+      card.replaceChildren(
+        el("p", { class: "answer-text" }, answerWithRefs(answer, citations, openRef)),
+        el("div", { class: "a-foot" },
+          el("span", { class: "a-label", text: citations.length ? `${citations.length} citation${citations.length === 1 ? "" : "s"}` : "No matching passages" }),
+          copy),
+        citations.length ? el("div", { class: "citations" }, ...blocks) : null,
+      );
+    }
+
+    async function ask(question) {
+      if (state.pending) return;
+      state.pending = true;
+      updateSend();
+      els.welcome.remove();
+      els.clear.hidden = false;
+      const card = el("div", { class: "a" }, el("div", { class: "thinking", "aria-label": "Searching documents" }, el("i"), el("i"), el("i")));
+      const turn = el("article", { class: "turn" }, el("div", { class: "q", text: question }), card);
+      els.thread.append(turn);
+      turn.scrollIntoView({ block: "end", behavior: "smooth" });
+      try {
+        const payload = await api("/questions", {
+          method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ question }),
+        });
+        renderAnswer(card, question, payload);
+      } catch (error) {
+        card.classList.add("error");
+        const retry = el("button", { class: "tool", type: "button", text: "Try again", onclick: () => { turn.remove(); ask(question); } });
+        card.replaceChildren(el("p", { class: "answer-text", text: error.message || "The question could not be answered." }), el("div", { class: "a-foot" }, el("span"), retry));
+      } finally {
+        state.pending = false;
+        updateSend();
+        turn.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      }
+    }
+
+    function autosize() {
+      els.question.style.height = "auto";
+      els.question.style.height = Math.min(els.question.scrollHeight, 180) + "px";
+      updateSend();
+    }
+    function updateSend() { els.ask.disabled = state.pending || !els.question.value.trim(); }
+
+    els.question.addEventListener("input", autosize);
+    els.question.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); els.form.requestSubmit(); }
+    });
+    els.form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const question = els.question.value.trim();
+      if (!question || state.pending) return;
+      els.question.value = "";
+      autosize();
+      ask(question);
+    });
+    els.clear.addEventListener("click", () => {
+      els.thread.querySelectorAll(".turn").forEach((n) => n.remove());
+      els.thread.append(els.welcome);
+      els.clear.hidden = true;
+      els.question.focus();
+    });
+
+    updateSend();
+    loadStatus();
+    loadDocs();
+    els.question.focus();
+  </script>
+</body>
+</html>

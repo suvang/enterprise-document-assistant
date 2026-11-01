@@ -30,6 +30,16 @@ def _langchain_embedding(embedder):
     return Adapter()
 
 
+def _document_prefix(document: str) -> str:
+    import hashlib
+
+    return hashlib.sha1(document.encode()).hexdigest()[:16] + "#"
+
+
+def _passage_id(document: str, chunk_index: int) -> str:
+    return f"{_document_prefix(document)}{chunk_index}"
+
+
 class PineconePassageStore:
     """Adapts a LangChain Pinecone store to the Passage port."""
 
@@ -37,8 +47,6 @@ class PineconePassageStore:
         self._store = store
 
     def add(self, passages, vectors) -> None:
-        import uuid
-
         rows = []
         for passage, vector in zip(passages, vectors):
             metadata = {
@@ -48,8 +56,24 @@ class PineconePassageStore:
             }
             if passage.page is not None:
                 metadata["page"] = passage.page
-            rows.append((str(uuid.uuid4()), vector, metadata))
-        self._store.index.upsert(vectors=rows)
+            rows.append((_passage_id(passage.document, passage.chunk_index), vector, metadata))
+        for start in range(0, len(rows), 100):
+            self._store.index.upsert(vectors=rows[start : start + 100])
+
+    def remove(self, document: str) -> None:
+        """Delete a Document's Passages. IDs share a per-Document prefix."""
+        index = self._store.index
+        prefix = _document_prefix(document)
+        try:
+            for ids in index.list(prefix=prefix):
+                if ids:
+                    index.delete(ids=list(ids))
+        except Exception:
+            # Pod-based indexes cannot list IDs; they support metadata filters instead.
+            try:
+                index.delete(filter={"document": {"$eq": document}})
+            except Exception:
+                pass
 
     def search(self, vector, k: int):
         from document_assistant.types import Passage, ScoredPassage
@@ -63,7 +87,8 @@ class PineconePassageStore:
                 ScoredPassage(
                     passage=Passage(
                         document=str(metadata.get("document", "")),
-                        page=page if isinstance(page, int) else None,
+                        # Pinecone returns numeric metadata as floats.
+                        page=int(page) if isinstance(page, (int, float)) else None,
                         chunk_index=int(metadata.get("chunk_index", 0)),
                         text=document.page_content,
                     ),
@@ -77,7 +102,14 @@ def build_assistant(
     env: Mapping[str, str] | None = None,
     pinecone_store=build_pinecone_store,
 ) -> Assistant:
-    settings = os.environ if env is None else env
+    settings: Mapping[str, str]
+    if env is None:
+        from dotenv import load_dotenv
+
+        load_dotenv()
+        settings = os.environ
+    else:
+        settings = env
     api_key = settings.get("PINECONE_API_KEY") or ""
     index_name = settings.get("PINECONE_INDEX") or ""
     openai_key = settings.get("OPENAI_API_KEY") or ""

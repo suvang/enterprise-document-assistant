@@ -14,6 +14,7 @@ class Citation:
     document: str
     page: int | None
     excerpt: str
+    score: float | None = None
 
 
 @dataclass(frozen=True)
@@ -26,3 +27,12 @@ class GroundedAnswer:
 class ScoredPassage:
     passage: Passage
     score: float
+
+
+@dataclass(frozen=True)
+class DocumentSummary:
+    """A Document currently in the Corpus and how many Passages it produced."""
+
+    name: str
+    passages: int
+    pages: int | None

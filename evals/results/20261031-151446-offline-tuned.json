@@ -1,0 +1,1611 @@
+{
+  "label": "tuned",
+  "mode": "offline",
+  "started_at": "2026-10-31T15:14:46Z",
+  "config": {
+    "chunk_size": 500,
+    "chunk_overlap": 100,
+    "top_k": 4,
+    "min_similarity": 0.1,
+    "store": "memory",
+    "judge_model": null
+  },
+  "summary": {
+    "cases": 37,
+    "pass_rate": 0.6756756756756757,
+    "retrieval_hit_rate": 0.90625,
+    "retrieval_recall": 0.90625,
+    "mrr": 0.875,
+    "page_hit_rate": 1.0,
+    "answer_accuracy": 0.75,
+    "false_refusal_rate": 0.03125,
+    "refusal_accuracy": 0.2,
+    "citation_marker_validity": null,
+    "faithfulness": null,
+    "latency_p50_ms": 1.0078749983222224,
+    "latency_p95_ms": 1.084508400526829,
+    "by_category": {
+      "distractor": {
+        "cases": 5,
+        "pass_rate": 0.6
+      },
+      "factual": {
+        "cases": 15,
+        "pass_rate": 0.9333333333333333
+      },
+      "multi_doc": {
+        "cases": 2,
+        "pass_rate": 0.0
+      },
+      "paraphrase": {
+        "cases": 7,
+        "pass_rate": 0.5714285714285714
+      },
+      "pdf": {
+        "cases": 3,
+        "pass_rate": 1.0
+      },
+      "unanswerable": {
+        "cases": 5,
+        "pass_rate": 0.2
+      }
+    },
+    "cost_per_question_usd": 0.0,
+    "tokens": {
+      "answer_input": 0,
+      "answer_output": 0,
+      "judge_input": 0,
+      "judge_output": 0,
+      "embedded_characters_ingest": 8279
+    }
+  },
+  "results": [
+    {
+      "id": "leave-01",
+      "category": "factual",
+      "answerable": true,
+      "question": "How many vacation days do full-time employees get each year?",
+      "expected_documents": [
+        "leave-policy.md"
+      ],
+      "retrieved_documents": [
+        "leave-policy.md",
+        "benefits-summary.pdf"
+      ],
+      "answer": "# Northwind Labs Leave Policy\n\nApplies to all full-time and part-time employees. Contractors are covered by the Contractor Guide instead.\n\n## Vacation\n\nFull-time employees receive 20 vacation days per calendar year. Vacation accrues at 1.67 days per month of service, starting on the first day of employment. Part-time employees accrue vacation in proportion to their contracted hours.",
+      "citations": [
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.6199
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.3451
+        },
+        {
+          "document": "benefits-summary.pdf",
+          "page": 2,
+          "score": 0.2767
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.25
+        }
+      ],
+      "latency_ms": 1.050708000548184,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "passed": true
+    },
+    {
+      "id": "leave-02",
+      "category": "factual",
+      "answerable": true,
+      "question": "How many unused vacation days can I carry over, and by when do I have to use them?",
+      "expected_documents": [
+        "leave-policy.md"
+      ],
+      "retrieved_documents": [
+        "leave-policy.md",
+        "expense-policy.md"
+      ],
+      "answer": "Up to 5 unused vacation days can be carried over into the next calendar year. Carried-over days must be used by March 31; any carried-over days left after that date are forfeited. Unused vacation is not paid out, except where local law requires it.\n\nVacation requests of three or more consecutive days must be submitted in the HR Portal at least two weeks in advance and approved by your manager.\n\n## Sick leave",
+      "citations": [
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.5314
+        },
+        {
+          "document": "expense-policy.md",
+          "page": null,
+          "score": 0.3962
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.2948
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.2309
+        }
+      ],
+      "latency_ms": 1.0572920000413433,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "passed": true
+    },
+    {
+      "id": "leave-03",
+      "category": "paraphrase",
+      "answerable": true,
+      "question": "I'm off sick for four days in a row. Do I need paperwork from a doctor?",
+      "expected_documents": [
+        "leave-policy.md"
+      ],
+      "retrieved_documents": [
+        "leave-policy.md",
+        "contractor-guide.md"
+      ],
+      "answer": "## Sick leave\n\nEmployees receive 10 paid sick days per year. Sick days do not carry over. A doctor's note is required after 3 consecutive sick days.\n\n## Parental leave\n\nThe primary caregiver receives 16 weeks of fully paid parental leave. The secondary caregiver receives 6 weeks of fully paid parental leave. Parental leave must be taken within 12 months of the birth or adoption.\n\n## Bereavement leave",
+      "citations": [
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.2295
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.1808
+        },
+        {
+          "document": "contractor-guide.md",
+          "page": null,
+          "score": 0.1782
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.1414
+        }
+      ],
+      "latency_ms": 1.0494999987713527,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "passed": true
+    },
+    {
+      "id": "leave-04",
+      "category": "factual",
+      "answerable": true,
+      "question": "How long is parental leave for the primary caregiver?",
+      "expected_documents": [
+        "leave-policy.md"
+      ],
+      "retrieved_documents": [
+        "leave-policy.md",
+        "contractor-guide.md",
+        "it-onboarding.md"
+      ],
+      "answer": "## Sick leave\n\nEmployees receive 10 paid sick days per year. Sick days do not carry over. A doctor's note is required after 3 consecutive sick days.\n\n## Parental leave\n\nThe primary caregiver receives 16 weeks of fully paid parental leave. The secondary caregiver receives 6 weeks of fully paid parental leave. Parental leave must be taken within 12 months of the birth or adoption.\n\n## Bereavement leave",
+      "citations": [
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.5004
+        },
+        {
+          "document": "contractor-guide.md",
+          "page": null,
+          "score": 0.1793
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.1265
+        },
+        {
+          "document": "it-onboarding.md",
+          "page": null,
+          "score": 0.1136
+        }
+      ],
+      "latency_ms": 1.0374589983257465,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "passed": true
+    },
+    {
+      "id": "leave-05",
+      "category": "paraphrase",
+      "answerable": true,
+      "question": "My dad's partner's brother passed away. How much time off do I get?",
+      "expected_documents": [
+        "leave-policy.md"
+      ],
+      "retrieved_documents": [
+        "contractor-guide.md",
+        "leave-policy.md"
+      ],
+      "answer": "## Time off\n\nContractors are not eligible for paid vacation, paid sick leave, or parental leave. Planned absences longer than 3 working days should be agreed with the engagement manager two weeks in advance.\n\n## Expenses\n\nContractors are not eligible for the home office stipend. Travel requested by Northwind is reimbursed against receipts, with meals capped at $50 per day.\n\n## Devices and access",
+      "citations": [
+        {
+          "document": "contractor-guide.md",
+          "page": null,
+          "score": 0.2362
+        },
+        {
+          "document": "contractor-guide.md",
+          "page": null,
+          "score": 0.2128
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.1826
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.1459
+        }
+      ],
+      "latency_ms": 0.9829580012592487,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 0.5,
+      "missing_facts": [
+        [
+          "2 days",
+          "two days",
+          "2 paid days"
+        ]
+      ],
+      "correct": false,
+      "passed": false
+    },
+    {
+      "id": "leave-06",
+      "category": "factual",
+      "answerable": true,
+      "question": "Is unused vacation paid out when I leave?",
+      "expected_documents": [
+        "leave-policy.md"
+      ],
+      "retrieved_documents": [
+        "leave-policy.md",
+        "contractor-guide.md"
+      ],
+      "answer": "Up to 5 unused vacation days can be carried over into the next calendar year. Carried-over days must be used by March 31; any carried-over days left after that date are forfeited. Unused vacation is not paid out, except where local law requires it.\n\nVacation requests of three or more consecutive days must be submitted in the HR Portal at least two weeks in advance and approved by your manager.\n\n## Sick leave",
+      "citations": [
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.3881
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.3464
+        },
+        {
+          "document": "contractor-guide.md",
+          "page": null,
+          "score": 0.2988
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.253
+        }
+      ],
+      "latency_ms": 0.955916999373585,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "passed": true
+    },
+    {
+      "id": "exp-01",
+      "category": "factual",
+      "answerable": true,
+      "question": "Within how many days do I have to submit an expense?",
+      "expected_documents": [
+        "expense-policy.md"
+      ],
+      "retrieved_documents": [
+        "expense-policy.md",
+        "remote-work.md",
+        "leave-policy.md"
+      ],
+      "answer": "# Northwind Labs Expense Policy\n\nThis policy covers business expenses paid by employees and later reimbursed.\n\n## Submitting expenses\n\nSubmit expenses in the Finance Portal within 30 days of the purchase. An itemized receipt is required for any expense over $25. Expenses submitted after 90 days will not be reimbursed.\n\nReimbursements are paid with the next monthly payroll after approval.\n\n## Approval limits",
+      "citations": [
+        {
+          "document": "expense-policy.md",
+          "page": null,
+          "score": 0.5392
+        },
+        {
+          "document": "remote-work.md",
+          "page": null,
+          "score": 0.2265
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.2169
+        },
+        {
+          "document": "remote-work.md",
+          "page": null,
+          "score": 0.2144
+        }
+      ],
+      "latency_ms": 0.9774169993761461,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "passed": true
+    },
+    {
+      "id": "exp-02",
+      "category": "factual",
+      "answerable": true,
+      "question": "Above what amount do I need an itemized receipt?",
+      "expected_documents": [
+        "expense-policy.md"
+      ],
+      "retrieved_documents": [],
+      "answer": "The documents do not contain an answer to that question.",
+      "citations": [],
+      "latency_ms": 0.9887079977488611,
+      "faithfulness": null,
+      "refused": true,
+      "markers_valid": null,
+      "hit": 0.0,
+      "recall": 0.0,
+      "rr": 0.0,
+      "missing_facts": [
+        [
+          "$25",
+          "25 dollars"
+        ]
+      ],
+      "correct": false,
+      "passed": false
+    },
+    {
+      "id": "exp-03",
+      "category": "paraphrase",
+      "answerable": true,
+      "question": "Who has to sign off on a $3,200 conference booking?",
+      "expected_documents": [
+        "expense-policy.md"
+      ],
+      "retrieved_documents": [
+        "contractor-guide.md"
+      ],
+      "answer": "## Time off\n\nContractors are not eligible for paid vacation, paid sick leave, or parental leave. Planned absences longer than 3 working days should be agreed with the engagement manager two weeks in advance.\n\n## Expenses\n\nContractors are not eligible for the home office stipend. Travel requested by Northwind is reimbursed against receipts, with meals capped at $50 per day.\n\n## Devices and access",
+      "citations": [
+        {
+          "document": "contractor-guide.md",
+          "page": null,
+          "score": 0.1091
+        }
+      ],
+      "latency_ms": 1.1055420000047889,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 0.0,
+      "recall": 0.0,
+      "rr": 0.0,
+      "missing_facts": [
+        [
+          "director"
+        ]
+      ],
+      "correct": false,
+      "passed": false
+    },
+    {
+      "id": "exp-04",
+      "category": "factual",
+      "answerable": true,
+      "question": "What is the daily meal allowance when travelling internationally?",
+      "expected_documents": [
+        "expense-policy.md"
+      ],
+      "retrieved_documents": [
+        "expense-policy.md",
+        "leave-policy.md",
+        "contractor-guide.md"
+      ],
+      "answer": "Reimbursements are paid with the next monthly payroll after approval.\n\n## Approval limits\n\n- Up to $1,000: your manager approves.\n- $1,000 to $5,000: a director approves.\n- Above $5,000: a VP approves, and Finance must be notified before the purchase.\n\n## Meals\n\nThe meal allowance while travelling is up to $75 per day for domestic travel and up to $100 per day for international travel. Alcohol is not reimbursable unless it is part of an approved client dinner.\n\n## Travel",
+      "citations": [
+        {
+          "document": "expense-policy.md",
+          "page": null,
+          "score": 0.1746
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.154
+        },
+        {
+          "document": "contractor-guide.md",
+          "page": null,
+          "score": 0.1195
+        }
+      ],
+      "latency_ms": 0.9588749999238644,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "passed": true
+    },
+    {
+      "id": "exp-05",
+      "category": "paraphrase",
+      "answerable": true,
+      "question": "My flight to Singapore is 9 hours. Can I fly premium economy?",
+      "expected_documents": [
+        "expense-policy.md"
+      ],
+      "retrieved_documents": [
+        "expense-policy.md",
+        "leave-policy.md",
+        "remote-work.md",
+        "security-policy.md"
+      ],
+      "answer": "## Travel\n\nBook flights through the travel tool. Economy class is required for flights under 6 hours. Premium economy is allowed for flights of 6 hours or longer. Business class requires VP approval.\n\nHotels are reimbursed up to $250 per night in tier-1 cities and up to $180 per night elsewhere.\n\n## Home office",
+      "citations": [
+        {
+          "document": "expense-policy.md",
+          "page": null,
+          "score": 0.381
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.164
+        },
+        {
+          "document": "remote-work.md",
+          "page": null,
+          "score": 0.1216
+        },
+        {
+          "document": "security-policy.md",
+          "page": null,
+          "score": 0.1127
+        }
+      ],
+      "latency_ms": 1.0188340020249598,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "passed": true
+    },
+    {
+      "id": "exp-06",
+      "category": "factual",
+      "answerable": true,
+      "question": "How much is the home office stipend for new employees?",
+      "expected_documents": [
+        "expense-policy.md"
+      ],
+      "retrieved_documents": [
+        "expense-policy.md",
+        "remote-work.md",
+        "benefits-summary.pdf"
+      ],
+      "answer": "## Home office\n\nNew employees can claim a one-time home office stipend of up to $500 for a desk, chair, monitor, or similar equipment. The stipend must be claimed within the first 90 days of employment.",
+      "citations": [
+        {
+          "document": "expense-policy.md",
+          "page": null,
+          "score": 0.6532
+        },
+        {
+          "document": "remote-work.md",
+          "page": null,
+          "score": 0.3038
+        },
+        {
+          "document": "remote-work.md",
+          "page": null,
+          "score": 0.2397
+        },
+        {
+          "document": "benefits-summary.pdf",
+          "page": 1,
+          "score": 0.1988
+        }
+      ],
+      "latency_ms": 0.9815840021474287,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "passed": true
+    },
+    {
+      "id": "sec-01",
+      "category": "factual",
+      "answerable": true,
+      "question": "What is the minimum password length?",
+      "expected_documents": [
+        "security-policy.md"
+      ],
+      "retrieved_documents": [
+        "security-policy.md"
+      ],
+      "answer": "# Northwind Labs Information Security Policy\n\n## Passwords and sign-in\n\nPasswords must be at least 14 characters long. Passwords are changed only when a compromise is suspected; there is no scheduled rotation. Multi-factor authentication is required for every company account. Administrators must use a hardware security key as their second factor.\n\n## Reporting incidents",
+      "citations": [
+        {
+          "document": "security-policy.md",
+          "page": null,
+          "score": 0.2554
+        }
+      ],
+      "latency_ms": 0.9508749972155783,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "passed": true
+    },
+    {
+      "id": "sec-02",
+      "category": "distractor",
+      "answerable": true,
+      "question": "How quickly must I report a phishing email I clicked on?",
+      "expected_documents": [
+        "security-policy.md"
+      ],
+      "retrieved_documents": [
+        "security-policy.md"
+      ],
+      "answer": "## Reporting incidents\n\nReport any suspected security incident, such as a phishing email you clicked or malware on your laptop, to security@northwind.example within 1 hour of noticing it.\n\nA lost or stolen laptop or phone must be reported to the IT helpdesk within 24 hours so the device can be locked and wiped remotely.\n\n## Devices",
+      "citations": [
+        {
+          "document": "security-policy.md",
+          "page": null,
+          "score": 0.2667
+        }
+      ],
+      "latency_ms": 0.9612499998183921,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "passed": true
+    },
+    {
+      "id": "sec-03",
+      "category": "distractor",
+      "answerable": true,
+      "question": "I lost my work laptop on the train. How soon do I need to report it?",
+      "expected_documents": [
+        "security-policy.md"
+      ],
+      "retrieved_documents": [
+        "security-policy.md",
+        "it-onboarding.md",
+        "contractor-guide.md"
+      ],
+      "answer": "## Reporting incidents\n\nReport any suspected security incident, such as a phishing email you clicked or malware on your laptop, to security@northwind.example within 1 hour of noticing it.\n\nA lost or stolen laptop or phone must be reported to the IT helpdesk within 24 hours so the device can be locked and wiped remotely.\n\n## Devices",
+      "citations": [
+        {
+          "document": "security-policy.md",
+          "page": null,
+          "score": 0.2817
+        },
+        {
+          "document": "it-onboarding.md",
+          "page": null,
+          "score": 0.1543
+        },
+        {
+          "document": "contractor-guide.md",
+          "page": null,
+          "score": 0.1365
+        },
+        {
+          "document": "contractor-guide.md",
+          "page": null,
+          "score": 0.1316
+        }
+      ],
+      "latency_ms": 0.9947500002454035,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "passed": true
+    },
+    {
+      "id": "sec-04",
+      "category": "paraphrase",
+      "answerable": true,
+      "question": "Can I keep customer payment details on my personal phone?",
+      "expected_documents": [
+        "security-policy.md"
+      ],
+      "retrieved_documents": [
+        "security-policy.md"
+      ],
+      "answer": "## Data classification\n\nNorthwind data has four classes: Public, Internal, Confidential, and Restricted. Restricted data, such as customer payment details and employee health records, must never be stored on personal devices or shared through personal email. Confidential data may be shared with vendors only under a signed NDA.\n\n## Access reviews",
+      "citations": [
+        {
+          "document": "security-policy.md",
+          "page": null,
+          "score": 0.2704
+        }
+      ],
+      "latency_ms": 1.0245839985145722,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "passed": true
+    },
+    {
+      "id": "sec-05",
+      "category": "factual",
+      "answerable": true,
+      "question": "What kind of second factor do administrators have to use?",
+      "expected_documents": [
+        "security-policy.md"
+      ],
+      "retrieved_documents": [
+        "security-policy.md",
+        "expense-policy.md",
+        "it-onboarding.md"
+      ],
+      "answer": "# Northwind Labs Information Security Policy\n\n## Passwords and sign-in\n\nPasswords must be at least 14 characters long. Passwords are changed only when a compromise is suspected; there is no scheduled rotation. Multi-factor authentication is required for every company account. Administrators must use a hardware security key as their second factor.\n\n## Reporting incidents",
+      "citations": [
+        {
+          "document": "security-policy.md",
+          "page": null,
+          "score": 0.3956
+        },
+        {
+          "document": "expense-policy.md",
+          "page": null,
+          "score": 0.2893
+        },
+        {
+          "document": "it-onboarding.md",
+          "page": null,
+          "score": 0.1217
+        }
+      ],
+      "latency_ms": 1.0480839991942048,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "passed": true
+    },
+    {
+      "id": "rem-01",
+      "category": "factual",
+      "answerable": true,
+      "question": "Which days do Berlin employees work from the office?",
+      "expected_documents": [
+        "remote-work.md"
+      ],
+      "retrieved_documents": [
+        "remote-work.md",
+        "expense-policy.md",
+        "leave-policy.md"
+      ],
+      "answer": "# Northwind Labs Remote and Hybrid Work Guidelines\n\n## Hybrid schedule\n\nEmployees assigned to the Bangalore or Berlin office work from the office 2 days per week, on Tuesday and Thursday. The remaining days can be worked from home.\n\nFully remote arrangements require approval from a VP and are reviewed every year.\n\n## Core hours\n\nCore collaboration hours are 11:00 to 15:00 in your local time zone. Meetings should be scheduled within core hours whenever possible.\n\n## Coworking spaces",
+      "citations": [
+        {
+          "document": "remote-work.md",
+          "page": null,
+          "score": 0.3836
+        },
+        {
+          "document": "remote-work.md",
+          "page": null,
+          "score": 0.3545
+        },
+        {
+          "document": "expense-policy.md",
+          "page": null,
+          "score": 0.3266
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.3162
+        }
+      ],
+      "latency_ms": 1.0082500011776574,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "passed": true
+    },
+    {
+      "id": "rem-02",
+      "category": "factual",
+      "answerable": true,
+      "question": "What are the core collaboration hours?",
+      "expected_documents": [
+        "remote-work.md"
+      ],
+      "retrieved_documents": [
+        "remote-work.md",
+        "security-policy.md",
+        "it-onboarding.md",
+        "expense-policy.md"
+      ],
+      "answer": "# Northwind Labs Remote and Hybrid Work Guidelines\n\n## Hybrid schedule\n\nEmployees assigned to the Bangalore or Berlin office work from the office 2 days per week, on Tuesday and Thursday. The remaining days can be worked from home.\n\nFully remote arrangements require approval from a VP and are reviewed every year.\n\n## Core hours\n\nCore collaboration hours are 11:00 to 15:00 in your local time zone. Meetings should be scheduled within core hours whenever possible.\n\n## Coworking spaces",
+      "citations": [
+        {
+          "document": "remote-work.md",
+          "page": null,
+          "score": 0.4333
+        },
+        {
+          "document": "security-policy.md",
+          "page": null,
+          "score": 0.1721
+        },
+        {
+          "document": "it-onboarding.md",
+          "page": null,
+          "score": 0.1466
+        },
+        {
+          "document": "expense-policy.md",
+          "page": null,
+          "score": 0.1455
+        }
+      ],
+      "latency_ms": 1.0078749983222224,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "passed": true
+    },
+    {
+      "id": "rem-03",
+      "category": "paraphrase",
+      "answerable": true,
+      "question": "Can I work from Portugal for a month while visiting family?",
+      "expected_documents": [
+        "remote-work.md"
+      ],
+      "retrieved_documents": [
+        "leave-policy.md"
+      ],
+      "answer": "## Bereavement leave\n\nEmployees receive up to 5 paid days of bereavement leave for the loss of an immediate family member, and 2 days for an extended family member.\n\n## Public holidays\n\nPublic holidays follow the calendar of the office you are assigned to. They do not count against vacation days.",
+      "citations": [
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.1155
+        }
+      ],
+      "latency_ms": 1.003917001071386,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 0.0,
+      "recall": 0.0,
+      "rr": 0.0,
+      "missing_facts": [
+        [
+          "30 days",
+          "thirty days"
+        ]
+      ],
+      "correct": false,
+      "passed": false
+    },
+    {
+      "id": "rem-04",
+      "category": "factual",
+      "answerable": true,
+      "question": "How much can I get back each month for a coworking space?",
+      "expected_documents": [
+        "remote-work.md"
+      ],
+      "retrieved_documents": [
+        "remote-work.md",
+        "benefits-summary.pdf",
+        "expense-policy.md"
+      ],
+      "answer": "## Coworking spaces\n\nEmployees who live more than 50 km from an office can be reimbursed up to $200 per month for a coworking space membership.\n\n## Working from another country\n\nYou may work from a country other than the one you are employed in for up to 30 days per calendar year. Any longer stay needs approval from HR and Legal because of tax and immigration rules.\n\n## Equipment\n\nRemote employees use the same company laptop as office employees. Home internet costs are not reimbursed.",
+      "citations": [
+        {
+          "document": "remote-work.md",
+          "page": null,
+          "score": 0.2311
+        },
+        {
+          "document": "benefits-summary.pdf",
+          "page": 1,
+          "score": 0.1814
+        },
+        {
+          "document": "expense-policy.md",
+          "page": null,
+          "score": 0.1321
+        },
+        {
+          "document": "remote-work.md",
+          "page": null,
+          "score": 0.1313
+        }
+      ],
+      "latency_ms": 0.9646250000514556,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "passed": true
+    },
+    {
+      "id": "it-01",
+      "category": "factual",
+      "answerable": true,
+      "question": "When will my laptop arrive before my first day?",
+      "expected_documents": [
+        "it-onboarding.md"
+      ],
+      "retrieved_documents": [
+        "it-onboarding.md",
+        "leave-policy.md"
+      ],
+      "answer": "# Northwind Labs IT Onboarding Guide\n\n## Your laptop\n\nNew employees choose between a MacBook Pro and a Lenovo ThinkPad X1 Carbon. The laptop is shipped to arrive 5 business days before your start date. If it has not arrived 2 days before you start, contact the IT helpdesk.\n\n## Getting help",
+      "citations": [
+        {
+          "document": "it-onboarding.md",
+          "page": null,
+          "score": 0.4719
+        },
+        {
+          "document": "it-onboarding.md",
+          "page": null,
+          "score": 0.2434
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.194
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.1897
+        }
+      ],
+      "latency_ms": 0.9659169991209637,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "passed": true
+    },
+    {
+      "id": "it-02",
+      "category": "paraphrase",
+      "answerable": true,
+      "question": "My code editor won't start. Where do I ask for help and how fast will they answer?",
+      "expected_documents": [
+        "it-onboarding.md"
+      ],
+      "retrieved_documents": [
+        "it-onboarding.md"
+      ],
+      "answer": "## Getting help\n\nAsk the IT helpdesk in the #it-help Slack channel. The helpdesk responds within 4 business hours. Urgent issues that stop you from working can be escalated by phone through the on-call number pinned in the channel.\n\n## Software\n\nRequest software through the Software Portal. Common tools such as the code editor, Slack, and the browser are installed automatically. Paid licenses need your manager's approval.\n\n## Network access",
+      "citations": [
+        {
+          "document": "it-onboarding.md",
+          "page": null,
+          "score": 0.2245
+        },
+        {
+          "document": "it-onboarding.md",
+          "page": null,
+          "score": 0.1599
+        }
+      ],
+      "latency_ms": 1.016124999296153,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "passed": true
+    },
+    {
+      "id": "it-03",
+      "category": "factual",
+      "answerable": true,
+      "question": "Which VPN technology does the company use?",
+      "expected_documents": [
+        "it-onboarding.md"
+      ],
+      "retrieved_documents": [
+        "it-onboarding.md",
+        "expense-policy.md",
+        "security-policy.md"
+      ],
+      "answer": "## Network access\n\nInternal tools are only reachable through the company VPN, which uses WireGuard. The VPN client is installed during laptop setup. Do not share your VPN configuration file.\n\n## Accounts\n\nYour single sign-on account is created on your first day. You will be asked to register multi-factor authentication before you can open any other tool.",
+      "citations": [
+        {
+          "document": "it-onboarding.md",
+          "page": null,
+          "score": 0.3402
+        },
+        {
+          "document": "expense-policy.md",
+          "page": null,
+          "score": 0.3235
+        },
+        {
+          "document": "security-policy.md",
+          "page": null,
+          "score": 0.1491
+        },
+        {
+          "document": "security-policy.md",
+          "page": null,
+          "score": 0.1474
+        }
+      ],
+      "latency_ms": 0.9760409993759822,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "passed": true
+    },
+    {
+      "id": "con-01",
+      "category": "distractor",
+      "answerable": true,
+      "question": "Do contractors get paid vacation days?",
+      "expected_documents": [
+        "contractor-guide.md"
+      ],
+      "retrieved_documents": [
+        "contractor-guide.md",
+        "leave-policy.md"
+      ],
+      "answer": "## Time off\n\nContractors are not eligible for paid vacation, paid sick leave, or parental leave. Planned absences longer than 3 working days should be agreed with the engagement manager two weeks in advance.\n\n## Expenses\n\nContractors are not eligible for the home office stipend. Travel requested by Northwind is reimbursed against receipts, with meals capped at $50 per day.\n\n## Devices and access",
+      "citations": [
+        {
+          "document": "contractor-guide.md",
+          "page": null,
+          "score": 0.4183
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.4151
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.3881
+        },
+        {
+          "document": "contractor-guide.md",
+          "page": null,
+          "score": 0.3769
+        }
+      ],
+      "latency_ms": 1.1015420022886246,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "passed": true
+    },
+    {
+      "id": "con-02",
+      "category": "distractor",
+      "answerable": true,
+      "question": "What is the meal cap for contractors travelling for Northwind?",
+      "expected_documents": [
+        "contractor-guide.md"
+      ],
+      "retrieved_documents": [
+        "contractor-guide.md",
+        "expense-policy.md"
+      ],
+      "answer": "# Northwind Labs Contractor Guide\n\nThis guide covers independent contractors engaged through a statement of work. Contractors are not employees, and the employee Leave Policy and Expense Policy do not apply to them except where stated here.\n\n## Invoicing and payment\n\nContractors invoice monthly, by the 5th day of the following month. Invoices are paid on net-30 terms.\n\n## Time off",
+      "citations": [
+        {
+          "document": "contractor-guide.md",
+          "page": null,
+          "score": 0.2692
+        },
+        {
+          "document": "expense-policy.md",
+          "page": null,
+          "score": 0.2619
+        },
+        {
+          "document": "contractor-guide.md",
+          "page": null,
+          "score": 0.239
+        },
+        {
+          "document": "contractor-guide.md",
+          "page": null,
+          "score": 0.2335
+        }
+      ],
+      "latency_ms": 1.0802500000863802,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [
+        [
+          "$50",
+          "50 per day"
+        ]
+      ],
+      "correct": false,
+      "passed": false
+    },
+    {
+      "id": "con-03",
+      "category": "distractor",
+      "answerable": true,
+      "question": "As a contractor, can I claim the home office stipend?",
+      "expected_documents": [
+        "contractor-guide.md"
+      ],
+      "retrieved_documents": [
+        "expense-policy.md",
+        "contractor-guide.md"
+      ],
+      "answer": "## Home office\n\nNew employees can claim a one-time home office stipend of up to $500 for a desk, chair, monitor, or similar equipment. The stipend must be claimed within the first 90 days of employment.",
+      "citations": [
+        {
+          "document": "expense-policy.md",
+          "page": null,
+          "score": 0.5715
+        },
+        {
+          "document": "contractor-guide.md",
+          "page": null,
+          "score": 0.2988
+        },
+        {
+          "document": "contractor-guide.md",
+          "page": null,
+          "score": 0.2335
+        },
+        {
+          "document": "contractor-guide.md",
+          "page": null,
+          "score": 0.2154
+        }
+      ],
+      "latency_ms": 1.0299159985152073,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 0.5,
+      "missing_facts": [
+        [
+          "not eligible",
+          "no",
+          "cannot"
+        ]
+      ],
+      "correct": false,
+      "passed": false
+    },
+    {
+      "id": "pdf-01",
+      "category": "pdf",
+      "answerable": true,
+      "question": "What percentage of dependents' health insurance premium does Northwind pay?",
+      "expected_documents": [
+        "benefits-summary.pdf"
+      ],
+      "retrieved_documents": [
+        "benefits-summary.pdf",
+        "expense-policy.md",
+        "it-onboarding.md"
+      ],
+      "answer": "Northwind Labs Benefits Summary 2026 - Health\nHealth insurance covers the employee and up to 4 dependents, such as a spouse, partner, or children.\nNorthwind pays 100% of the premium for the employee and 50% of the premium for each dependent.\nCoverage starts on the first day of employment. Annual hospitalization cover is up to $40,000 per family.\nAn annual health check-up is free for employees and their spouse or partner.",
+      "citations": [
+        {
+          "document": "benefits-summary.pdf",
+          "page": 1,
+          "score": 0.462
+        },
+        {
+          "document": "expense-policy.md",
+          "page": null,
+          "score": 0.1475
+        },
+        {
+          "document": "benefits-summary.pdf",
+          "page": 2,
+          "score": 0.1268
+        },
+        {
+          "document": "it-onboarding.md",
+          "page": null,
+          "score": 0.114
+        }
+      ],
+      "latency_ms": 0.9716250024212059,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "page_hit": true,
+      "passed": true
+    },
+    {
+      "id": "pdf-02",
+      "category": "pdf",
+      "answerable": true,
+      "question": "How much does the company match for retirement contributions, and when does it vest?",
+      "expected_documents": [
+        "benefits-summary.pdf"
+      ],
+      "retrieved_documents": [
+        "benefits-summary.pdf",
+        "remote-work.md"
+      ],
+      "answer": "Northwind Labs Benefits Summary 2026 - Retirement and Learning\nRetirement plan: Northwind matches employee contributions up to 6% of base salary.\nThe company match vests after 1 year of service. Employee contributions vest immediately.\nLearning budget: every employee receives $1,500 per year for courses, books, and conferences.\nUnused learning budget does not carry over to the next year.",
+      "citations": [
+        {
+          "document": "benefits-summary.pdf",
+          "page": 2,
+          "score": 0.4
+        },
+        {
+          "document": "remote-work.md",
+          "page": null,
+          "score": 0.1438
+        }
+      ],
+      "latency_ms": 0.9562080012983643,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "page_hit": true,
+      "passed": true
+    },
+    {
+      "id": "pdf-03",
+      "category": "pdf",
+      "answerable": true,
+      "question": "What is the yearly learning budget per employee?",
+      "expected_documents": [
+        "benefits-summary.pdf"
+      ],
+      "retrieved_documents": [
+        "benefits-summary.pdf",
+        "remote-work.md",
+        "leave-policy.md"
+      ],
+      "answer": "Northwind Labs Benefits Summary 2026 - Retirement and Learning\nRetirement plan: Northwind matches employee contributions up to 6% of base salary.\nThe company match vests after 1 year of service. Employee contributions vest immediately.\nLearning budget: every employee receives $1,500 per year for courses, books, and conferences.\nUnused learning budget does not carry over to the next year.",
+      "citations": [
+        {
+          "document": "benefits-summary.pdf",
+          "page": 2,
+          "score": 0.45
+        },
+        {
+          "document": "remote-work.md",
+          "page": null,
+          "score": 0.2532
+        },
+        {
+          "document": "remote-work.md",
+          "page": null,
+          "score": 0.2397
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.2306
+        }
+      ],
+      "latency_ms": 0.9992919985961635,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [],
+      "correct": true,
+      "page_hit": true,
+      "passed": true
+    },
+    {
+      "id": "multi-01",
+      "category": "multi_doc",
+      "answerable": true,
+      "question": "I'm a new employee. What equipment can I expense for my home office, and which laptop models can I choose from?",
+      "expected_documents": [
+        "expense-policy.md",
+        "it-onboarding.md"
+      ],
+      "retrieved_documents": [
+        "expense-policy.md",
+        "remote-work.md",
+        "it-onboarding.md"
+      ],
+      "answer": "## Home office\n\nNew employees can claim a one-time home office stipend of up to $500 for a desk, chair, monitor, or similar equipment. The stipend must be claimed within the first 90 days of employment.",
+      "citations": [
+        {
+          "document": "expense-policy.md",
+          "page": null,
+          "score": 0.4041
+        },
+        {
+          "document": "remote-work.md",
+          "page": null,
+          "score": 0.3223
+        },
+        {
+          "document": "expense-policy.md",
+          "page": null,
+          "score": 0.2387
+        },
+        {
+          "document": "it-onboarding.md",
+          "page": null,
+          "score": 0.2384
+        }
+      ],
+      "latency_ms": 1.0330000004614703,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [
+        [
+          "macbook pro"
+        ],
+        [
+          "thinkpad"
+        ]
+      ],
+      "correct": false,
+      "passed": false
+    },
+    {
+      "id": "multi-02",
+      "category": "multi_doc",
+      "answerable": true,
+      "question": "How much time off do employees get for sickness, and do contractors get the same?",
+      "expected_documents": [
+        "leave-policy.md",
+        "contractor-guide.md"
+      ],
+      "retrieved_documents": [
+        "contractor-guide.md",
+        "leave-policy.md",
+        "remote-work.md"
+      ],
+      "answer": "# Northwind Labs Contractor Guide\n\nThis guide covers independent contractors engaged through a statement of work. Contractors are not employees, and the employee Leave Policy and Expense Policy do not apply to them except where stated here.\n\n## Invoicing and payment\n\nContractors invoice monthly, by the 5th day of the following month. Invoices are paid on net-30 terms.\n\n## Time off",
+      "citations": [
+        {
+          "document": "contractor-guide.md",
+          "page": null,
+          "score": 0.3807
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.2935
+        },
+        {
+          "document": "remote-work.md",
+          "page": null,
+          "score": 0.179
+        },
+        {
+          "document": "contractor-guide.md",
+          "page": null,
+          "score": 0.169
+        }
+      ],
+      "latency_ms": 1.0613330014166422,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "hit": 1.0,
+      "recall": 1.0,
+      "rr": 1.0,
+      "missing_facts": [
+        [
+          "10",
+          "ten"
+        ]
+      ],
+      "correct": false,
+      "passed": false
+    },
+    {
+      "id": "none-01",
+      "category": "unanswerable",
+      "answerable": false,
+      "question": "What is Northwind's stock ticker symbol?",
+      "expected_documents": [],
+      "retrieved_documents": [],
+      "answer": "The documents do not contain an answer to that question.",
+      "citations": [],
+      "latency_ms": 1.0748749991762452,
+      "faithfulness": null,
+      "refused": true,
+      "markers_valid": null,
+      "passed": true
+    },
+    {
+      "id": "none-02",
+      "category": "unanswerable",
+      "answerable": false,
+      "question": "How many vacation days do interns receive?",
+      "expected_documents": [],
+      "retrieved_documents": [
+        "leave-policy.md"
+      ],
+      "answer": "# Northwind Labs Leave Policy\n\nApplies to all full-time and part-time employees. Contractors are covered by the Contractor Guide instead.\n\n## Vacation\n\nFull-time employees receive 20 vacation days per calendar year. Vacation accrues at 1.67 days per month of service, starting on the first day of employment. Part-time employees accrue vacation in proportion to their contracted hours.",
+      "citations": [
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.4126
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.3796
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.3536
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.2582
+        }
+      ],
+      "latency_ms": 1.0480410019226838,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "passed": false
+    },
+    {
+      "id": "none-03",
+      "category": "unanswerable",
+      "answerable": false,
+      "question": "Does Northwind reimburse gym memberships?",
+      "expected_documents": [],
+      "retrieved_documents": [
+        "expense-policy.md",
+        "benefits-summary.pdf",
+        "leave-policy.md"
+      ],
+      "answer": "Reimbursements are paid with the next monthly payroll after approval.\n\n## Approval limits\n\n- Up to $1,000: your manager approves.\n- $1,000 to $5,000: a director approves.\n- Above $5,000: a VP approves, and Finance must be notified before the purchase.\n\n## Meals\n\nThe meal allowance while travelling is up to $75 per day for domestic travel and up to $100 per day for international travel. Alcohol is not reimbursable unless it is part of an approved client dinner.\n\n## Travel",
+      "citations": [
+        {
+          "document": "expense-policy.md",
+          "page": null,
+          "score": 0.1952
+        },
+        {
+          "document": "benefits-summary.pdf",
+          "page": 2,
+          "score": 0.1118
+        },
+        {
+          "document": "benefits-summary.pdf",
+          "page": 1,
+          "score": 0.1111
+        },
+        {
+          "document": "leave-policy.md",
+          "page": null,
+          "score": 0.1031
+        }
+      ],
+      "latency_ms": 1.0167500004172325,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "passed": false
+    },
+    {
+      "id": "none-04",
+      "category": "unanswerable",
+      "answerable": false,
+      "question": "What is the dress code for client meetings?",
+      "expected_documents": [],
+      "retrieved_documents": [
+        "benefits-summary.pdf",
+        "it-onboarding.md"
+      ],
+      "answer": "Northwind Labs Benefits Summary 2026 - Retirement and Learning\nRetirement plan: Northwind matches employee contributions up to 6% of base salary.\nThe company match vests after 1 year of service. Employee contributions vest immediately.\nLearning budget: every employee receives $1,500 per year for courses, books, and conferences.\nUnused learning budget does not carry over to the next year.",
+      "citations": [
+        {
+          "document": "benefits-summary.pdf",
+          "page": 2,
+          "score": 0.1677
+        },
+        {
+          "document": "it-onboarding.md",
+          "page": null,
+          "score": 0.1361
+        }
+      ],
+      "latency_ms": 0.9497079990978818,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "passed": false
+    },
+    {
+      "id": "none-05",
+      "category": "unanswerable",
+      "answerable": false,
+      "question": "How much is the annual performance bonus?",
+      "expected_documents": [],
+      "retrieved_documents": [
+        "benefits-summary.pdf"
+      ],
+      "answer": "Northwind Labs Benefits Summary 2026 - Health\nHealth insurance covers the employee and up to 4 dependents, such as a spouse, partner, or children.\nNorthwind pays 100% of the premium for the employee and 50% of the premium for each dependent.\nCoverage starts on the first day of employment. Annual hospitalization cover is up to $40,000 per family.\nAn annual health check-up is free for employees and their spouse or partner.",
+      "citations": [
+        {
+          "document": "benefits-summary.pdf",
+          "page": 1,
+          "score": 0.1283
+        }
+      ],
+      "latency_ms": 0.9997920024034102,
+      "faithfulness": null,
+      "refused": false,
+      "markers_valid": null,
+      "passed": false
+    }
+  ]
+}

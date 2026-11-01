@@ -19,6 +19,9 @@ class InMemoryVectorStore:
     def add(self, passages: list[Passage], vectors: list[list[float]]) -> None:
         self._items.extend(zip(passages, vectors))
 
+    def remove(self, document: str) -> None:
+        self._items = [item for item in self._items if item[0].document != document]
+
     def search(self, vector: list[float], k: int) -> list[ScoredPassage]:
         scored = [
             ScoredPassage(passage, cosine(vector, stored))
